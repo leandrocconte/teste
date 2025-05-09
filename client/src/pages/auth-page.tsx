@@ -6,16 +6,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Bot } from "lucide-react";
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+
+// Componente de input customizado para resolver problemas de edição
+const CustomInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -172,7 +186,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Nome completo</FormLabel>
                         <FormControl>
-                          <Input 
+                          <CustomInput 
                             placeholder="Seu nome completo" 
                             {...field} 
                           />
@@ -189,7 +203,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input 
+                          <CustomInput 
                             placeholder="seu@email.com" 
                             type="email"
                             {...field} 
@@ -232,7 +246,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Senha</FormLabel>
                         <FormControl>
-                          <Input 
+                          <CustomInput 
                             placeholder="••••••••" 
                             type="password"
                             {...field} 
@@ -250,7 +264,7 @@ export default function AuthPage() {
                       <FormItem>
                         <FormLabel>Confirmar senha</FormLabel>
                         <FormControl>
-                          <Input 
+                          <CustomInput 
                             placeholder="••••••••" 
                             type="password"
                             {...field} 
