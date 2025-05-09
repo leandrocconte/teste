@@ -27,6 +27,10 @@ const registerSchema = z.object({
   email: z.string().email("Email inválido"),
   phone: z.string().min(1, "Telefone é obrigatório"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  confirmPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem",
+  path: ["confirmPassword"],
 });
 
 export default function AuthPage() {
@@ -54,6 +58,7 @@ export default function AuthPage() {
       email: "",
       phone: "",
       password: "",
+      confirmPassword: "",
     },
   });
   
@@ -70,7 +75,9 @@ export default function AuthPage() {
   };
   
   const onRegisterSubmit = (values: z.infer<typeof registerSchema>) => {
-    registerMutation.mutate(values);
+    // Remover o campo confirmPassword antes de enviar para o backend
+    const { confirmPassword, ...dataToSubmit } = values;
+    registerMutation.mutate(dataToSubmit);
   };
   
   return (
@@ -224,6 +231,24 @@ export default function AuthPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Senha</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="••••••••" 
+                            type="password"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirmar senha</FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="••••••••" 
