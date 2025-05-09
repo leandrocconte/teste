@@ -23,7 +23,7 @@ const CustomInput = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
     return (
       <input
         type={type}
-        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
         ref={ref}
         {...props}
       />
@@ -179,40 +179,40 @@ export default function AuthPage() {
             ) : (
               <Form {...registerForm}>
                 <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                  <FormField
-                    control={registerForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nome completo</FormLabel>
-                        <FormControl>
-                          <CustomInput 
-                            placeholder="Seu nome completo" 
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="name">
+                      Nome completo
+                    </label>
+                    <input
+                      id="name"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      placeholder="Seu nome completo"
+                      {...registerForm.register('name')}
+                    />
+                    {registerForm.formState.errors.name && (
+                      <p className="text-sm font-medium text-destructive">
+                        {registerForm.formState.errors.name.message}
+                      </p>
                     )}
-                  />
+                  </div>
                   
-                  <FormField
-                    control={registerForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <CustomInput 
-                            placeholder="seu@email.com" 
-                            type="email"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="email">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      placeholder="seu@email.com"
+                      type="email"
+                      {...registerForm.register('email')}
+                    />
+                    {registerForm.formState.errors.email && (
+                      <p className="text-sm font-medium text-destructive">
+                        {registerForm.formState.errors.email.message}
+                      </p>
                     )}
-                  />
+                  </div>
                   
                   <FormField
                     control={registerForm.control}
@@ -239,41 +239,41 @@ export default function AuthPage() {
                     )}
                   />
                   
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Senha</FormLabel>
-                        <FormControl>
-                          <CustomInput 
-                            placeholder="••••••••" 
-                            type="password"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="password">
+                      Senha
+                    </label>
+                    <input
+                      id="password"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      placeholder="••••••••" 
+                      type="password"
+                      {...registerForm.register('password')}
+                    />
+                    {registerForm.formState.errors.password && (
+                      <p className="text-sm font-medium text-destructive">
+                        {registerForm.formState.errors.password.message}
+                      </p>
                     )}
-                  />
+                  </div>
                   
-                  <FormField
-                    control={registerForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirmar senha</FormLabel>
-                        <FormControl>
-                          <CustomInput 
-                            placeholder="••••••••" 
-                            type="password"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="confirmPassword">
+                      Confirmar senha
+                    </label>
+                    <input
+                      id="confirmPassword"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      placeholder="••••••••" 
+                      type="password"
+                      {...registerForm.register('confirmPassword')}
+                    />
+                    {registerForm.formState.errors.confirmPassword && (
+                      <p className="text-sm font-medium text-destructive">
+                        {registerForm.formState.errors.confirmPassword.message}
+                      </p>
                     )}
-                  />
+                  </div>
                   
                   <Button 
                     type="submit" 
