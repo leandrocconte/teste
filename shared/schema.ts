@@ -22,7 +22,6 @@ export const users = pgTable("users", {
 
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
-  verified: true,
   reset_token: true,
   reset_token_expires: true,
   tier_id: true

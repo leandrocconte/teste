@@ -15,7 +15,7 @@ type AuthContextType = {
   error: Error | null;
   loginMutation: UseMutationResult<User, Error, LoginData>;
   logoutMutation: UseMutationResult<void, Error, void>;
-  registerMutation: UseMutationResult<{message: string}, Error, RegisterData>;
+  registerMutation: UseMutationResult<User, Error, RegisterData>;
 };
 
 type LoginData = {
@@ -72,12 +72,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await apiRequest("POST", "/api/register", userData);
       return await res.json();
     },
-    onSuccess: (data) => {
+    onSuccess: (user: User) => {
+      queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Cadastro realizado",
-        description: data.message,
+        description: `Bem-vindo, ${user.name}!`,
       });
-      setLocation("/email-verification?email=" + encodeURIComponent(data.email));
+      setLocation("/");
     },
     onError: (error: Error) => {
       toast({

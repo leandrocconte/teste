@@ -58,9 +58,10 @@ export function setupAuth(app: Express) {
             return done(null, false, { message: 'Email não encontrado' });
           }
           
-          if (!user.verified) {
-            return done(null, false, { message: 'Email não verificado. Por favor, verifique seu email.' });
-          }
+          // Verificação de email desativada
+          // if (!user.verified) {
+          //   return done(null, false, { message: 'Email não verificado. Por favor, verifique seu email.' });
+          // }
           
           if (!(await comparePasswords(password, user.password))) {
             return done(null, false, { message: 'Senha incorreta' });
@@ -101,19 +102,24 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Email já cadastrado" });
       }
       
-      // Create user
+      // Create user (com verified = true para desativar verificação de email)
       const hashedPassword = await hashPassword(password);
       const user = await storage.createUser({
         name,
         email,
         phone,
-        password: hashedPassword
+        password: hashedPassword,
+        verified: true
       });
       
-      // Send verification email
-      await sendVerificationEmail(user.email, user.id);
+      // Verificação de email desativada
+      // await sendVerificationEmail(user.email, user.id);
       
-      res.status(201).json({ message: "Usuário criado com sucesso. Verifique seu email." });
+      // Login automático após registro
+      req.login(user, (err) => {
+        if (err) return next(err);
+        res.status(201).json(user);
+      });
     } catch (error) {
       next(error);
     }
@@ -143,7 +149,7 @@ export function setupAuth(app: Express) {
 
   // Login endpoint
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: any, user: any, info: any) => {
       if (err) return next(err);
       if (!user) return res.status(401).json({ message: info.message });
       
