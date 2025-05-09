@@ -39,7 +39,6 @@ export default function AuthPage() {
     navigate("/");
     return null;
   }
-  
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -57,6 +56,14 @@ export default function AuthPage() {
       password: "",
     },
   });
+  
+  // Function to toggle between login and register forms
+  const toggleForm = () => {
+    // Reset both forms when switching between them
+    loginForm.reset();
+    registerForm.reset();
+    setIsLogin(!isLogin);
+  };
   
   const onLoginSubmit = (values: z.infer<typeof loginSchema>) => {
     loginMutation.mutate(values);
@@ -253,7 +260,7 @@ export default function AuthPage() {
                 <Button
                   variant="link"
                   className="pl-1"
-                  onClick={() => setIsLogin(!isLogin)}
+                  onClick={toggleForm}
                 >
                   {isLogin ? "Cadastre-se" : "Faça login"}
                 </Button>
