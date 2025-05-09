@@ -228,13 +228,25 @@ export default function ChatPage() {
               
               {/* Message Thread */}
               {messages?.map((message, index) => (
-                <ChatMessage
-                  key={message.id}
-                  content={message.content}
-                  sender="user"
-                  timestamp={new Date(message.created_at)}
-                  userName={user?.name || ""}
-                />
+                <div key={message.id}>
+                  {/* User Message */}
+                  <ChatMessage
+                    content={message.content}
+                    sender="user"
+                    timestamp={new Date(message.created_at)}
+                    userName={user?.name || ""}
+                  />
+                  
+                  {/* AI Response */}
+                  {message.ai_response && (
+                    <ChatMessage
+                      content={message.ai_response}
+                      sender="ai"
+                      timestamp={new Date(message.created_at)}
+                      userName="AI Assistant"
+                    />
+                  )}
+                </div>
               ))}
               
               {/* Loading Indicator for sending message */}
