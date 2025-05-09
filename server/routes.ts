@@ -4,7 +4,9 @@ import { storage } from "./storage";
 import { setupAuth, hashPassword } from "./auth";
 import axios from "axios";
 import { z } from "zod";
-import { insertMessageSchema } from "@shared/schema";
+import { insertMessageSchema, messages } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication routes
@@ -83,9 +85,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Update the message with AI response
-      const updatedMessage = await storage.updateUser(message.id, {
-        ai_response: aiResponse
-      });
+      const updatedMessage = await db.update(messages)
+        .set({ ai_response: aiResponse })
+        .where(eq(messages.id, message.id))
+        .returning();
 
       // Decrement available responses
       await storage.updateUser(user.id, {
