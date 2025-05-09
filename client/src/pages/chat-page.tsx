@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Trash2, Download, Loader2 } from "lucide-react";
+import { Send, Trash2, Download, Loader2, ChevronLeft } from "lucide-react";
 import { useParams, useLocation } from "wouter";
 import { useRef, useState, useEffect } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -122,10 +122,28 @@ export default function ChatPage() {
           <div className="bg-card border-b border-border p-4 sticky top-0 z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="mr-1 md:hidden"
+                  onClick={() => navigate("/")}
+                >
+                  <ChevronLeft size={18} />
+                </Button>
                 <div>
-                  <h2 className="font-semibold">{selectedList?.title || "Chat com IA"}</h2>
+                  <h2 className="font-semibold flex items-center">
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      className="mr-1 hidden md:flex"
+                      onClick={() => navigate("/")}
+                    >
+                      <ChevronLeft size={18} />
+                    </Button>
+                    {selectedList?.title || "Chat com IA"}
+                  </h2>
                   <p className="text-muted-foreground text-sm">
-                    <span>{user?.responses_available}</span> respostas restantes
+                    <span>{user?.responses_available || 0}</span> respostas restantes
                   </p>
                 </div>
               </div>
@@ -279,7 +297,7 @@ export default function ChatPage() {
               </div>
               <div className="mt-2 text-xs text-muted-foreground flex justify-between items-center">
                 <span>
-                  {user?.responses_available > 0 ? (
+                  {user && user.responses_available !== undefined && user.responses_available > 0 ? (
                     <>
                       <span className="text-primary">{user.responses_available}</span> respostas restantes
                     </>
@@ -287,7 +305,7 @@ export default function ChatPage() {
                     <span className="text-red-500">Sem respostas disponíveis</span>
                   )}
                 </span>
-                {user?.responses_available === 0 && (
+                {user && user.responses_available !== undefined && user.responses_available === 0 && (
                   <Button
                     variant="link"
                     size="sm"

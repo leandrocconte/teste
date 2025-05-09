@@ -6,7 +6,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Bot } from "lucide-react";
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import { useLocation } from "wouter";
@@ -52,11 +52,6 @@ export default function AuthPage() {
   const { loginMutation, registerMutation, user } = useAuth();
   const [_, navigate] = useLocation();
   
-  // If already logged in, redirect to home
-  if (user) {
-    navigate("/");
-    return null;
-  }
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -75,6 +70,13 @@ export default function AuthPage() {
       confirmPassword: "",
     },
   });
+  
+  // Use useEffect para o redirecionamento após todos os hooks serem chamados
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
   
   // Function to toggle between login and register forms
   const toggleForm = () => {

@@ -29,8 +29,7 @@ export function Sidebar({ responsive = true }: SidebarProps) {
     enabled: !!user,
   });
   
-  // Get user's tier
-  const userTier = tiers?.find(tier => tier.tier_id === user?.tier_id);
+  // Get user's tier - será substituído pelo userTierFixed abaixo
   
   const navigationItems = [
     { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
@@ -55,7 +54,7 @@ export function Sidebar({ responsive = true }: SidebarProps) {
   };
   
   // Fix para o erro de type em tiers?.find
-  const userTierFixed = tiers ? tiers.find(tier => tier.tier_id === user?.tier_id) : undefined;
+  const userTierFixed = Array.isArray(tiers) ? tiers.find((tier: any) => tier.tier_id === user?.tier_id) : undefined;
   
   const sidebarContent = (
     <>
