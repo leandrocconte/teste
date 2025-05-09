@@ -1,0 +1,103 @@
+Descrição Geral
+
+Crie um webapp de chat de IA que enviará as mensagens para uma api externa e retornará uma resposta para o usuario. Esse webapp precisa ter fluxo de usuário completo, banco de dados relacional com autenticação de usuario, armazenamento de dados do usuario etc. A lógica de páginas, tabelas e regras de negócio deve seguir o escopo abaixo, já preparado para escalabilidade e segurança de informações, não passando tokens de forma publicaTema: dark mode
+
+Páginas
+
+1. Cadastro
+
+Coletar name, email e phone.
+
+Usar sistema de autenticação próprio; gravar name e phone na tabela users.
+
+Enviar e-mail de confirmação após cadastro.
+
+2. Login
+
+Tela de login contra a tabela users.
+
+Opção “recuperar senha” via e-mail usando endpoint próprio.
+
+3. Biblioteca de IAs
+
+Lista paginada de cards de IA (ias) filtrados por lista_id:
+
+Biomecânica (lista_id = 1)
+
+Postagens para Instagram (lista_id = 2)
+
+
+
+4. Chat com IA
+
+Mostrar histórico de messages filtrado por user_id (obtido na sessão) e lista_id selecionada.
+
+Ao enviar mensagem:
+
+POST para https://fl.libx.com.br/webhook-test/8391ddd1-64c2-4347-b8f6-6784a31242353 com payload { message, user_id, lista_id }.
+
+Salvar no banco de dados usuário e resposta da IA na tabela messages.
+
+A resposta da IA virá como resposta no campo "output" e terá um codigo 200 para confirmar que deu certo
+
+Avatar:
+
+Usuário: primeira letra de users.name sobre fundo roxo;
+
+IA: “IA” sobre fundo branco;
+
+centrados no balão.
+
+Respeitar quebras de linha:
+
+\n → 1 quebra;
+
+\n\n → 2 quebras.
+
+Se users.responses_available = 0, bloquear envio e exibir no chat “Sem respostas disponíveis” + Texto e Botão Call to action para direcionar para a página “Gerenciar Assinatura”.
+
+5. Gerenciar Assinatura
+
+Mostrar plano atual (tiers.titulo) e users.responses_available
+
+Exibir planos disponíveis (ordenar por tier_id):
+
+free (tiers.titulo) (tier*id=4): 20 (responses_limit)  msgs/mês (valor)
+
+básico (tiers.titulo) (tier_id=1): 200 (responses_limit)  msgs/mês — R$ 11,90 (valor)
+
+pro (tiers.titulo) (tier_id=2): 400 (responses_limit)  msgs/mês — R$ 16,90 (valor)
+
+premium  (tiers.titulo) (tier_id=3): 1000 (responses_limit)  msgs/mês — R$ 26,90 (valor)
+
+Itens de checklist:
+
+Fonte: tabela checklist_planos (colunas id, descricao).
+
+Para cada plano em tiers, verificar colunas check1, check2 e check3:
+
+Se o valor for sim, exibir ✔️;
+
+Se for não, exibir ❌ com cor menos destacada.
+
+Se usuário clicar em outro plano, redirecionar para tiers.link.
+
+6. Descontos com Parceiros
+
+Listar cards a partir da tabela parceiros:
+
+Exibir apenas registros com ativo = true.
+
+Cada card leva ao URL definido em parceiros.link.
+
+Menu Sanduíche (todas as telas)
+
+Respostas da IA disponíveis: XX (users.responses_available)
+
+Biblioteca de IAs → página 3
+
+Gerenciar minha assinatura → página 5
+
+Descontos com parceiros → página 6
+
+Sair
