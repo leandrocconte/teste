@@ -177,22 +177,6 @@ export default function ChatPage() {
                     <span className="text-primary">{selectedList?.title?.toLowerCase() || "este tema"}</span>. 
                     Como posso te auxiliar hoje?
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-lg mx-auto">
-                    <Button
-                      variant="outline"
-                      className="text-left h-auto py-3 justify-start"
-                      onClick={() => handleQuickPrompt("Explique de forma simples sobre este assunto")}
-                    >
-                      <p>Explique de forma simples sobre este assunto</p>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="text-left h-auto py-3 justify-start"
-                      onClick={() => handleQuickPrompt("Quais são as melhores práticas para este tema?")}
-                    >
-                      <p>Quais são as melhores práticas para este tema?</p>
-                    </Button>
-                  </div>
                 </div>
               )}
               

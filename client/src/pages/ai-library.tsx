@@ -63,8 +63,7 @@ export default function AILibraryPage() {
                       <div className="p-4">
                         <h3 className="text-lg font-semibold mb-2">{category.title}</h3>
                         <p className="text-muted-foreground text-sm mb-4">{category.description}</p>
-                        <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground text-sm">ID: {category.id}</span>
+                        <div className="flex justify-end items-center">
                           <Button size="sm">
                             Iniciar chat
                           </Button>

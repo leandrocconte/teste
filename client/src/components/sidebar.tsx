@@ -38,12 +38,10 @@ export function Sidebar({ responsive = true }: SidebarProps) {
     { id: "partners", title: "Descontos com Parceiros", icon: <TicketIcon size={20} />, path: "/partners" },
   ];
   
-  // Close sidebar when navigating on mobile
+  // Close sidebar when navigating (always use menu hamburger)
   useEffect(() => {
-    if (responsive) {
-      setIsSidebarOpen(false);
-    }
-  }, [location, responsive]);
+    setIsSidebarOpen(false);
+  }, [location]);
   
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -55,6 +53,9 @@ export function Sidebar({ responsive = true }: SidebarProps) {
     if (path !== "/" && location.startsWith(path)) return true;
     return false;
   };
+  
+  // Fix para o erro de type em tiers?.find
+  const userTierFixed = tiers ? tiers.find(tier => tier.tier_id === user?.tier_id) : undefined;
   
   const sidebarContent = (
     <>
@@ -138,9 +139,9 @@ export function Sidebar({ responsive = true }: SidebarProps) {
     </>
   );
   
-  // Mobile header
-  const mobileHeader = responsive && (
-    <header className="lg:hidden bg-background border-b border-border p-4 flex items-center justify-between sticky top-0 z-10">
+  // Header with hamburger menu (sempre visível em todos os tamanhos de tela)
+  const appHeader = (
+    <header className="bg-background border-b border-border p-4 flex items-center justify-between sticky top-0 z-10">
       <button 
         onClick={() => setIsSidebarOpen(true)} 
         className="p-2 rounded-md hover:bg-secondary transition"
@@ -171,36 +172,22 @@ export function Sidebar({ responsive = true }: SidebarProps) {
   
   return (
     <>
-      {mobileHeader}
+      {/* Sempre mostrar o header com menu hamburger */}
+      {appHeader}
       
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar for desktop or mobile when open */}
-        <div
-          className={`${
-            responsive
-              ? "fixed inset-0 z-50 lg:relative lg:inset-auto"
-              : ""
-          } ${
-            responsive && !isSidebarOpen && "hidden lg:block"
-          }`}
-        >
-          {/* Backdrop for mobile */}
-          {responsive && (
-            <div 
-              className="absolute inset-0 bg-background/80 lg:hidden" 
-              onClick={() => setIsSidebarOpen(false)}
-            />
-          )}
+        {/* Sidebar sempre é um overlay, independente do tamanho da tela */}
+        <div className={`fixed inset-0 z-50 ${!isSidebarOpen && "hidden"}`}>
+          {/* Backdrop para fechar o menu ao clicar fora */}
+          <div 
+            className="absolute inset-0 bg-background/80" 
+            onClick={() => setIsSidebarOpen(false)}
+          />
           
           {/* Sidebar Content */}
           <div
-            className={`${
-              responsive
-                ? "absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border flex flex-col transition-transform transform lg:relative lg:translate-x-0"
-                : "w-64 bg-background border-r border-border flex flex-col h-full"
-            } ${
-              responsive && (isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0")
-            }`}
+            className={`absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border 
+                       flex flex-col transition-transform transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
           >
             {sidebarContent}
           </div>
