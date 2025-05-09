@@ -14,6 +14,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -187,15 +189,22 @@ export default function AuthPage() {
                   <FormField
                     control={registerForm.control}
                     name="phone"
-                    render={({ field }) => (
+                    render={({ field: { onChange, value, ...field } }) => (
                       <FormItem>
                         <FormLabel>Telefone</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="(00) 00000-0000" 
-                            type="tel"
-                            {...field} 
-                          />
+                          <div className="phone-input-container">
+                            <PhoneInput
+                              country={'br'}
+                              value={value}
+                              onChange={phone => onChange(phone)}
+                              inputClass="phone-input"
+                              containerClass="phone-container"
+                              buttonClass="phone-dropdown"
+                              placeholder="(11) 99999-9999"
+                              {...field}
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
