@@ -339,14 +339,29 @@ export default function ChatPage() {
             </div>
           ))}
           
-          {/* Loading Indicator for sending message */}
-          {isMessageLoading && (
-            <div className="flex items-center space-x-2 px-4 py-3 bg-secondary rounded-xl max-w-max">
-              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0s"}}></div>
-              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.1s"}}></div>
-              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></div>
+          {/* Temporary User Message - mostrada enquanto aguarda resposta da API */}
+          {tempMessage && (
+            <div key="temp-message">
+              <ChatMessage
+                content={tempMessage.content}
+                sender="user"
+                timestamp={tempMessage.timestamp}
+                userName={user?.name || ""}
+              />
+              {isMessageLoading && (
+                <div className="flex items-start space-x-3 ml-2 animate-pulse">
+                  <div className="flex-shrink-0">
+                    <AIAvatar size="sm" />
+                  </div>
+                  <div className="px-4 py-3 rounded-lg bg-secondary text-muted-foreground text-sm">
+                    Digitando...
+                  </div>
+                </div>
+              )}
             </div>
           )}
+          
+          {/* O indicador de carregamento global foi removido, pois agora mostramos como parte da mensagem temporária */}
         </div>
       </div>
       
