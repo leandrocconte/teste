@@ -2,13 +2,15 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Loader2, ChevronLeft, Menu } from "lucide-react";
+import { Send, Loader2, Menu, X, LogOut, Bot, CrownIcon, TicketIcon } from "lucide-react";
 import { useParams, useLocation } from "wouter";
 import { useRef, useState, useEffect } from "react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { ChatMessage } from "@/components/chat-message";
-import { Message, List } from "@shared/schema";
+import { Message, List, Tier } from "@shared/schema";
 import { AIAvatar } from "@/components/ui/ai-avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function ChatPage() {
   const { listId } = useParams();
@@ -18,6 +20,7 @@ export default function ChatPage() {
   const [newMessage, setNewMessage] = useState("");
   const [isMessageLoading, setIsMessageLoading] = useState(false);
   const [noResponsesWarningShown, setNoResponsesWarningShown] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -95,37 +98,144 @@ export default function ChatPage() {
     }
   };
   
+  // Get tiers data
+  const { data: tiers } = useQuery<Tier[]>({
+    queryKey: ["/api/tiers"],
+    enabled: !!user,
+  });
+  
+  // Fix para o erro de type em tiers?.find
+  const userTier = Array.isArray(tiers) ? tiers.find((tier: any) => tier.tier_id === user?.tier_id) : undefined;
+  
+  const navigationItems = [
+    { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
+    { id: "subscription", title: "Gerenciar Assinatura", icon: <CrownIcon size={20} />, path: "/subscription" },
+    { id: "partners", title: "Descontos com Parceiros", icon: <TicketIcon size={20} />, path: "/partners" },
+  ];
+
+  // Handle sidebar location
+  const [location] = useLocation();
+  
+  // Close sidebar when navigating
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location]);
+  
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/logout");
+    },
+    onSuccess: () => {
+      navigate("/auth");
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
+  
+  // Determine if a nav item is active
+  const isActive = (path: string) => {
+    if (path === "/" && location === "/") return true;
+    if (path !== "/" && location.startsWith(path)) return true;
+    return false;
+  };
+  
+  const sidebarContent = (
+    <>
+      {/* Logo */}
+      <div className="p-4 border-b border-border flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-white">
+            <Bot size={18} />
+          </div>
+          <span className="font-semibold text-lg">IA Chat</span>
+        </div>
+        <button 
+          onClick={() => setIsSidebarOpen(false)} 
+          className="p-1 hover:bg-secondary rounded"
+        >
+          <X size={20} />
+        </button>
+      </div>
+      
+      {/* Responses Counter */}
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Respostas disponíveis</span>
+          <span className="font-mono px-2 py-1 bg-secondary rounded text-primary">
+            {user?.responses_available || 0}
+          </span>
+        </div>
+      </div>
+      
+      {/* Navigation Items */}
+      <nav className="flex-1 overflow-y-auto p-2">
+        <div className="space-y-1">
+          {navigationItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => navigate(item.path)}
+              className={`flex w-full items-center px-3 py-2 rounded-md transition ${
+                isActive(item.path)
+                  ? "bg-primary bg-opacity-20 text-primary"
+                  : "hover:bg-secondary"
+              }`}
+            >
+              <span className="mr-3 text-lg">{item.icon}</span>
+              <span>{item.title}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+      
+      {/* User profile and logout */}
+      <div className="p-3 border-t border-border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <UserAvatar name={user?.name || ""} />
+            <div>
+              <div className="font-medium">{user?.name}</div>
+              <div className="text-sm text-muted-foreground">{user?.email}</div>
+            </div>
+          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleLogout}
+                >
+                  <LogOut size={18} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Sair</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+    </>
+  );
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header com hamburger menu e título do chat */}
       <header className="bg-background border-b border-border p-4 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center space-x-2">
           <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('toggle-sidebar'))}
+            onClick={() => setIsSidebarOpen(true)}
             className="p-2 rounded-md hover:bg-secondary transition"
           >
             <Menu size={20} />
           </button>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="md:hidden"
-            onClick={() => navigate("/")}
-          >
-            <ChevronLeft size={18} />
-          </Button>
         </div>
         
         <div className="text-lg font-medium">
           <h2 className="flex items-center">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="mr-1 hidden md:flex"
-              onClick={() => navigate("/")}
-            >
-              <ChevronLeft size={18} />
-            </Button>
             {selectedList?.title || "Chat com IA"}
           </h2>
         </div>
@@ -138,6 +248,24 @@ export default function ChatPage() {
       </header>
       
       {/* Área de mensagens (scroll) */}
+      {/* Sidebar */}
+      <div className={`fixed inset-0 z-50 ${!isSidebarOpen && "hidden"}`}>
+        {/* Backdrop para fechar o menu ao clicar fora */}
+        <div 
+          className="absolute inset-0 bg-background/80" 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+        
+        {/* Sidebar Content */}
+        <div
+          className={`absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border 
+                     flex flex-col transition-transform transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          {sidebarContent}
+        </div>
+      </div>
+      
+      {/* Chat Messages Area - Área de scroll */}
       <div 
         className="flex-1 overflow-y-auto p-4" 
         ref={chatContainerRef}
