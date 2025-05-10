@@ -37,6 +37,14 @@ export default function ChatPage() {
   const { data: messages, isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: [`/api/messages/${listId}`],
     enabled: !!listId,
+    onSuccess: () => {
+      // Scroll to bottom when messages are loaded
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+      }, 100);
+    }
   });
   
   // Send message mutation
@@ -57,12 +65,12 @@ export default function ChatPage() {
     },
   });
   
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when messages change or when temp message appears
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, tempMessage]);
   
   // Auto-resize textarea
   useEffect(() => {
