@@ -1,12 +1,10 @@
-import { Sidebar } from "@/components/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Trash2, Download, Loader2, ChevronLeft } from "lucide-react";
+import { Send, Loader2, ChevronLeft, Menu } from "lucide-react";
 import { useParams, useLocation } from "wouter";
 import { useRef, useState, useEffect } from "react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { ChatMessage } from "@/components/chat-message";
 import { Message, List } from "@shared/schema";
@@ -97,226 +95,188 @@ export default function ChatPage() {
     }
   };
   
-  const handleClearChat = () => {
-    if (window.confirm("Tem certeza que deseja limpar toda a conversa?")) {
-      // In a real app, this would call an API to delete messages
-      alert("Funcionalidade não implementada");
-    }
-  };
-  
-  // Handle quick prompts
-  const handleQuickPrompt = (prompt: string) => {
-    setNewMessage(prompt);
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-    }
-  };
-  
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex flex-1 overflow-hidden">
-        <main className="flex-1 flex flex-col h-screen w-full">
-          {/* Chat Header - Fixo no topo */}
-          <div className="bg-card border-b border-border p-4 sticky top-0 z-10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="mr-1 md:hidden"
-                  onClick={() => navigate("/")}
-                >
-                  <ChevronLeft size={18} />
-                </Button>
-                <div>
-                  <h2 className="font-semibold flex items-center">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="mr-1 hidden md:flex"
-                      onClick={() => navigate("/")}
-                    >
-                      <ChevronLeft size={18} />
-                    </Button>
-                    {selectedList?.title || "Chat com IA"}
-                  </h2>
-                  <p className="text-muted-foreground text-sm">
-                    <span>{user?.responses_available || 0}</span> respostas restantes
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" onClick={handleClearChat}>
-                        <Trash2 size={18} />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Limpar conversa</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Download size={18} />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Exportar conversa</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </div>
-          </div>
-          
-          {/* Chat Messages Area - Área de scroll */}
-          <div 
-            className="flex-1 overflow-y-auto p-4" 
-            ref={chatContainerRef}
-            style={{ height: "calc(100vh - 160px)" }}
+      {/* Header com hamburger menu e título do chat */}
+      <header className="bg-background border-b border-border p-4 flex items-center justify-between sticky top-0 z-20">
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('toggle-sidebar'))}
+            className="p-2 rounded-md hover:bg-secondary transition"
           >
-            <div className="max-w-3xl mx-auto space-y-4">
-              {/* Welcome Message */}
-              {messages?.length === 0 && !messagesLoading && (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-primary bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
-                    <AIAvatar />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Bem-vindo ao chat</h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Estou aqui para ajudar com{" "}
-                    <span className="text-primary">{selectedList?.title?.toLowerCase() || "este tema"}</span>. 
-                    Como posso te auxiliar hoje?
+            <Menu size={20} />
+          </button>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="md:hidden"
+            onClick={() => navigate("/")}
+          >
+            <ChevronLeft size={18} />
+          </Button>
+        </div>
+        
+        <div className="text-lg font-medium">
+          <h2 className="flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="mr-1 hidden md:flex"
+              onClick={() => navigate("/")}
+            >
+              <ChevronLeft size={18} />
+            </Button>
+            {selectedList?.title || "Chat com IA"}
+          </h2>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <span className="text-xs text-muted-foreground">
+            <span className="font-mono">{user?.responses_available || 0}</span> respostas
+          </span>
+        </div>
+      </header>
+      
+      {/* Área de mensagens (scroll) */}
+      <div 
+        className="flex-1 overflow-y-auto p-4" 
+        ref={chatContainerRef}
+        style={{ height: "calc(100vh - 132px)" }}
+      >
+        <div className="max-w-3xl mx-auto space-y-4">
+          {/* Welcome Message */}
+          {messages?.length === 0 && !messagesLoading && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-primary bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
+                <AIAvatar />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Bem-vindo ao chat</h3>
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                Estou aqui para ajudar com{" "}
+                <span className="text-primary">{selectedList?.title?.toLowerCase() || "este tema"}</span>. 
+                Como posso te auxiliar hoje?
+              </p>
+            </div>
+          )}
+          
+          {/* Loading */}
+          {messagesLoading && (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          )}
+          
+          {/* No Responses Available Warning */}
+          {user?.responses_available === 0 && noResponsesWarningShown && (
+            <div className="bg-red-500 bg-opacity-10 border border-red-500 border-opacity-20 rounded-lg p-4 animate-pulse">
+              <div className="flex items-start">
+                <div className="mr-3 mt-0.5 text-red-500">!</div>
+                <div>
+                  <h4 className="font-medium text-red-500">Sem respostas disponíveis</h4>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Você atingiu o limite de respostas para o seu plano atual.
                   </p>
-                </div>
-              )}
-              
-              {/* Loading */}
-              {messagesLoading && (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              )}
-              
-              {/* No Responses Available Warning */}
-              {user?.responses_available === 0 && noResponsesWarningShown && (
-                <div className="bg-red-500 bg-opacity-10 border border-red-500 border-opacity-20 rounded-lg p-4 animate-pulse">
-                  <div className="flex items-start">
-                    <div className="mr-3 mt-0.5 text-red-500">!</div>
-                    <div>
-                      <h4 className="font-medium text-red-500">Sem respostas disponíveis</h4>
-                      <p className="text-muted-foreground text-sm mt-1">
-                        Você atingiu o limite de respostas para o seu plano atual.
-                      </p>
-                      <div className="mt-3">
-                        <Button 
-                          size="sm"
-                          onClick={() => navigate("/subscription")}
-                        >
-                          Gerenciar Assinatura
-                        </Button>
-                      </div>
-                    </div>
+                  <div className="mt-3">
+                    <Button 
+                      size="sm"
+                      onClick={() => navigate("/subscription")}
+                    >
+                      Gerenciar Assinatura
+                    </Button>
                   </div>
                 </div>
-              )}
+              </div>
+            </div>
+          )}
+          
+          {/* Message Thread */}
+          {messages?.map((message) => (
+            <div key={message.id}>
+              {/* User Message */}
+              <ChatMessage
+                content={message.content}
+                sender="user"
+                timestamp={new Date(message.created_at || Date.now())}
+                userName={user?.name || ""}
+              />
               
-              {/* Message Thread */}
-              {messages?.map((message, index) => (
-                <div key={message.id}>
-                  {/* User Message */}
-                  <ChatMessage
-                    content={message.content}
-                    sender="user"
-                    timestamp={new Date(message.created_at || Date.now())}
-                    userName={user?.name || ""}
-                  />
-                  
-                  {/* AI Response */}
-                  {message.ai_response && (
-                    <ChatMessage
-                      content={message.ai_response}
-                      sender="ai"
-                      timestamp={new Date(message.created_at || Date.now())}
-                      userName="AI Assistant"
-                    />
-                  )}
-                </div>
-              ))}
-              
-              {/* Loading Indicator for sending message */}
-              {isMessageLoading && (
-                <div className="flex items-center space-x-2 px-4 py-3 bg-secondary rounded-xl max-w-max">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0s"}}></div>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.1s"}}></div>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></div>
-                </div>
+              {/* AI Response */}
+              {message.ai_response && (
+                <ChatMessage
+                  content={message.ai_response}
+                  sender="ai"
+                  timestamp={new Date(message.created_at || Date.now())}
+                  userName="AI Assistant"
+                />
               )}
             </div>
-          </div>
+          ))}
           
-          {/* Message Input - Fixo na parte inferior */}
-          <div className="border-t border-border p-4 bg-card sticky bottom-0">
-            <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto">
-              <div className="relative">
-                <Textarea
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage(e);
-                    }
-                  }}
-                  placeholder="Digite sua mensagem..."
-                  className="resize-none pr-12 min-h-[52px] max-h-32"
-                  disabled={user?.responses_available === 0 || isMessageLoading}
-                  ref={textareaRef}
-                  rows={1}
-                />
-                <Button
-                  type="submit"
-                  size="icon"
-                  className="absolute right-3 top-3 p-2 rounded-full"
-                  disabled={
-                    user?.responses_available === 0 || 
-                    isMessageLoading || 
-                    !newMessage.trim()
-                  }
-                >
-                  <Send size={18} />
-                </Button>
-              </div>
-              <div className="mt-2 text-xs text-muted-foreground flex justify-between items-center">
-                <span>
-                  {user && user.responses_available !== undefined && user.responses_available > 0 ? (
-                    <>
-                      <span className="text-primary">{user.responses_available}</span> respostas restantes
-                    </>
-                  ) : (
-                    <span className="text-red-500">Sem respostas disponíveis</span>
-                  )}
-                </span>
-                {user && user.responses_available !== undefined && user.responses_available === 0 && (
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-primary p-0 h-auto"
-                    onClick={() => navigate("/subscription")}
-                  >
-                    Atualizar plano
-                  </Button>
-                )}
-              </div>
-            </form>
+          {/* Loading Indicator for sending message */}
+          {isMessageLoading && (
+            <div className="flex items-center space-x-2 px-4 py-3 bg-secondary rounded-xl max-w-max">
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0s"}}></div>
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.1s"}}></div>
+              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></div>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Message Input - Fixo na parte inferior */}
+      <div className="border-t border-border p-4 bg-card sticky bottom-0 left-0 right-0 z-10">
+        <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto">
+          <div className="relative flex items-center">
+            <Textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage(e);
+                }
+              }}
+              placeholder="Digite sua mensagem..."
+              className="resize-none pr-12 min-h-[52px] max-h-32"
+              disabled={user?.responses_available === 0 || isMessageLoading}
+              ref={textareaRef}
+              rows={1}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              className="absolute right-3 top-[50%] transform -translate-y-1/2 p-2 rounded-full"
+              disabled={
+                user?.responses_available === 0 || 
+                isMessageLoading || 
+                !newMessage.trim()
+              }
+            >
+              <Send size={18} />
+            </Button>
           </div>
-        </main>
+          <div className="mt-2 text-xs text-muted-foreground flex justify-between items-center">
+            <span>
+              {user && user.responses_available !== undefined && user.responses_available > 0 ? (
+                <>
+                  <span className="text-primary">{user.responses_available}</span> respostas restantes
+                </>
+              ) : (
+                <span className="text-red-500">Sem respostas disponíveis</span>
+              )}
+            </span>
+            {user && user.responses_available !== undefined && user.responses_available === 0 && (
+              <Button
+                variant="link"
+                size="sm"
+                className="text-primary p-0 h-auto"
+                onClick={() => navigate("/subscription")}
+              >
+                Atualizar plano
+              </Button>
+            )}
+          </div>
+        </form>
       </div>
     </div>
   );

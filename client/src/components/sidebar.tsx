@@ -42,6 +42,19 @@ export function Sidebar({ responsive = true }: SidebarProps) {
     setIsSidebarOpen(false);
   }, [location]);
   
+  // Adiciona um event listener para o toggle-sidebar
+  useEffect(() => {
+    const handleToggleSidebar = () => {
+      setIsSidebarOpen(prev => !prev);
+    };
+    
+    window.addEventListener('toggle-sidebar', handleToggleSidebar);
+    
+    return () => {
+      window.removeEventListener('toggle-sidebar', handleToggleSidebar);
+    };
+  }, []);
+  
   const handleLogout = () => {
     logoutMutation.mutate();
   };

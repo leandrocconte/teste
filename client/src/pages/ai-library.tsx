@@ -2,7 +2,7 @@ import { Sidebar } from "@/components/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Loader2 } from "lucide-react";
+import { Loader2, Menu } from "lucide-react";
 import { List } from "@shared/schema";
 
 export default function AILibraryPage() {
@@ -18,6 +18,18 @@ export default function AILibraryPage() {
   
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Header com hamburger menu */}
+      <header className="bg-background border-b border-border p-4 flex items-center justify-between sticky top-0 z-10">
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('toggle-sidebar'))}
+          className="p-2 rounded-md hover:bg-secondary transition"
+        >
+          <Menu size={20} />
+        </button>
+        <div className="text-lg font-medium">Biblioteca de IAs</div>
+        <div className="w-8"></div>
+      </header>
+      
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 overflow-auto w-full">
           <div className="flex-1 overflow-auto p-4 md:p-6">
