@@ -34,6 +34,7 @@ export const lists = pgTable("lists", {
   description: text("description").notNull(),
   image_url: text("image_url"),
   tag: text("tag"),
+  credits_per_use: integer("credits_per_use").default(1).notNull(),
 });
 
 export const insertListSchema = createInsertSchema(lists).omit({

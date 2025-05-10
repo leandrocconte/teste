@@ -21,6 +21,7 @@ export default function ChatPage() {
   const [isMessageLoading, setIsMessageLoading] = useState(false);
   const [noResponsesWarningShown, setNoResponsesWarningShown] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [tempMessage, setTempMessage] = useState<{ content: string; timestamp: Date } | null>(null);
   
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -89,10 +90,19 @@ export default function ChatPage() {
     const messageContent = newMessage.trim();
     setNewMessage("");
     
+    // Mostrar a mensagem do usuário imediatamente
+    setTempMessage({
+      content: messageContent,
+      timestamp: new Date()
+    });
+    
     try {
       await sendMessageMutation.mutateAsync(messageContent);
+      // Após receber a resposta, limpar a mensagem temporária
+      setTempMessage(null);
     } catch (error) {
       console.error("Error sending message:", error);
+      // Manter a mensagem temporária em caso de erro para não perder o contexto
     } finally {
       setIsMessageLoading(false);
     }

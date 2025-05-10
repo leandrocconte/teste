@@ -201,13 +201,11 @@ export default function AILibraryPage() {
                           />
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
-                        {category.tag && (
-                          <div className="absolute bottom-0 left-0 p-4">
-                            <span className="inline-block bg-primary text-white px-2 py-1 rounded text-sm font-medium">
-                              {category.tag}
-                            </span>
-                          </div>
-                        )}
+                        <div className="absolute bottom-0 left-0 p-4">
+                          <span className="inline-block bg-primary text-white px-2 py-1 rounded text-sm font-medium">
+                            1 resposta da IA = {category.credits_per_use} crédito{category.credits_per_use > 1 ? 's' : ''}
+                          </span>
+                        </div>
                       </div>
                       <div className="p-4">
                         <h3 className="text-lg font-semibold mb-2">{category.title}</h3>
