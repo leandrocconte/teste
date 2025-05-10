@@ -41,15 +41,8 @@ export default function AILibraryPage() {
     setIsSidebarOpen(false);
   }, [location]);
   
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
-    },
-    onSuccess: () => {
-      navigate("/auth");
-    },
-  });
+  // Logout usando o hook useAuth
+  const { logoutMutation } = useAuth();
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -99,7 +92,7 @@ export default function AILibraryPage() {
               onClick={() => navigate(item.path)}
               className={`flex w-full items-center px-3 py-2 rounded-md transition ${
                 isActive(item.path)
-                  ? "bg-primary bg-opacity-20 text-primary"
+                  ? "bg-primary text-white"
                   : "hover:bg-secondary"
               }`}
             >
