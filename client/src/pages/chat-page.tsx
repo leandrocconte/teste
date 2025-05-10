@@ -240,11 +240,7 @@ export default function ChatPage() {
           </h2>
         </div>
         
-        <div className="flex items-center space-x-2">
-          <span className="text-xs text-muted-foreground">
-            <span className="font-mono">{user?.responses_available || 0}</span> respostas
-          </span>
-        </div>
+        <div className="w-8"></div>
       </header>
       
       {/* Área de mensagens (scroll) */}

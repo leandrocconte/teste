@@ -1,8 +1,13 @@
-import { Sidebar } from "@/components/sidebar";
-import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Parceiro } from "@shared/schema";
+import { Loader2, Menu, X, Bot, CrownIcon, TicketIcon, LogOut } from "lucide-react";
+import { Parceiro, Tier } from "@shared/schema";
+import { useLocation } from "wouter";
+import { useState, useEffect } from "react";
+import { queryClient, apiRequest } from "@/lib/queryClient";
+import { UserAvatar } from "@/components/ui/user-avatar";
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function PartnersPage() {
   const { data: partners, isLoading: partnersLoading } = useQuery<Parceiro[]>({

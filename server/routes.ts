@@ -76,6 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get AI response
       const aiResponse = response.data.output;
+      const subtrairQuantidade = response.data.subtrair ? Number(response.data.subtrair) : 0;
 
       // Save message and AI response
       const message = await storage.createMessage({
@@ -90,10 +91,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .where(eq(messages.id, message.id))
         .returning();
 
-      // Decrement available responses
-      await storage.updateUser(user.id, {
-        responses_available: user.responses_available - 1
-      });
+      // Só desconta mensagens se o parâmetro subtrair estiver presente na resposta
+      if (subtrairQuantidade > 0) {
+        // Descontar a quantidade especificada de mensagens disponíveis
+        const novaQuantidade = Math.max(0, user.responses_available - subtrairQuantidade);
+        await storage.updateUser(user.id, {
+          responses_available: novaQuantidade
+        });
+      }
 
       // Return complete conversation
       res.status(201).json({
