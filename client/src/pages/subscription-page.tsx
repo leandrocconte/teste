@@ -51,15 +51,8 @@ export default function SubscriptionPage() {
     setIsSidebarOpen(false);
   }, [location]);
   
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
-    },
-    onSuccess: () => {
-      navigate("/auth");
-    },
-  });
+  // Logout usando o hook useAuth
+  const { logoutMutation } = useAuth();
 
   const handleLogout = () => {
     logoutMutation.mutate();

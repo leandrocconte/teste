@@ -41,15 +41,8 @@ export default function PartnersPage() {
     setIsSidebarOpen(false);
   }, [location]);
   
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
-    },
-    onSuccess: () => {
-      navigate("/auth");
-    },
-  });
+  // Logout usando o hook useAuth
+  const { logoutMutation } = useAuth();
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -227,7 +220,9 @@ export default function PartnersPage() {
                         <h3 className="text-lg font-semibold mb-2">{partner.name}</h3>
                         <p className="text-muted-foreground text-sm mb-4">{partner.description}</p>
                         <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground text-sm">{partner.valid_until}</span>
+                          <span className="text-muted-foreground text-sm">
+                            <span className="font-medium text-xs">Válido até:</span> {partner.valid_until}
+                          </span>
                           <Button size="sm">
                             Ver oferta
                           </Button>
