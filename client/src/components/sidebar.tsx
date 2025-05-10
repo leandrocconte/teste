@@ -174,22 +174,20 @@ export function Sidebar({ responsive = true }: SidebarProps) {
       {/* Sempre mostrar o header com menu hamburger */}
       {appHeader}
       
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar sempre é um overlay, independente do tamanho da tela */}
-        <div className={`fixed inset-0 z-50 ${!isSidebarOpen && "hidden"}`}>
-          {/* Backdrop para fechar o menu ao clicar fora */}
-          <div 
-            className="absolute inset-0 bg-background/80" 
-            onClick={() => setIsSidebarOpen(false)}
-          />
-          
-          {/* Sidebar Content */}
-          <div
-            className={`absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border 
-                       flex flex-col transition-transform transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
-          >
-            {sidebarContent}
-          </div>
+      {/* Sidebar sempre é um overlay, independente do tamanho da tela */}
+      <div className={`fixed inset-0 z-50 ${!isSidebarOpen && "hidden"}`}>
+        {/* Backdrop para fechar o menu ao clicar fora */}
+        <div 
+          className="absolute inset-0 bg-background/80" 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+        
+        {/* Sidebar Content */}
+        <div
+          className={`absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border 
+                     flex flex-col transition-transform transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          {sidebarContent}
         </div>
       </div>
     </>

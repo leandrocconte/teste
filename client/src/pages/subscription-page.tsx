@@ -24,7 +24,7 @@ export default function SubscriptionPage() {
   });
   
   // Get user's tier
-  const userTier = tiers?.find(tier => tier.tier_id === user?.tier_id);
+  const userTier = Array.isArray(tiers) ? tiers.find((tier: any) => tier.tier_id === user?.tier_id) : undefined;
   
   // Calculate percentage of responses used
   const responsesPercentage = userTier && user 
