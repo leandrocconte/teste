@@ -258,8 +258,8 @@ export default function SubscriptionPage() {
                           <div className="text-muted-foreground text-sm mb-1">Seu plano atual</div>
                           <h3 className="text-xl font-semibold flex items-center">
                             <span>{userTier.titulo}</span>
-                            <span className="ml-2 text-xs font-normal px-2 py-0.5 bg-green-700 text-white rounded">
-                              Ativo
+                            <span className={`ml-2 text-xs font-normal px-2 py-0.5 ${user?.payment_status === 'atrasado' ? 'bg-red-600' : 'bg-green-700'} text-white rounded`}>
+                              {user?.payment_status === 'atrasado' ? 'Atrasado' : 'Ativo'}
                             </span>
                           </h3>
                         </div>
