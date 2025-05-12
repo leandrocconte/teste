@@ -17,6 +17,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(userId: number, userData: Partial<User>): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
   
   // Password reset methods
   createPasswordResetToken(email: string): Promise<string | undefined>;
@@ -91,6 +92,18 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return user || undefined;
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const usersList = await db
+        .select()
+        .from(users);
+      return usersList;
+    } catch (error) {
+      console.error("Error getting all users:", error);
+      return [];
+    }
   }
 
   // Password reset methods

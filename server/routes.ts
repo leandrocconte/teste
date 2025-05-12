@@ -142,6 +142,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Erro ao buscar parceiros" });
     }
   });
+  
+  // Atualiza créditos e verifica status de pagamento (executado diariamente por um cron job)
+  app.post("/api/check-payment-status", async (req, res) => {
+    try {
+      // Obter todos os usuários
+      const users = await storage.getAllUsers();
+      
+      // Para cada usuário, verificar o status de pagamento
+      const updatedUsers = await Promise.all(users.map(async (user) => {
+        const hoje = new Date();
+        
+        // Data de referência para renovação
+        const dataBase = user.tier_id === 4  // 4 = plano free
+          ? new Date(user.created_at || hoje) // plano free: baseado na data de cadastro
+          : new Date(user.last_payment_date || hoje); // outros planos: baseado na data do último pagamento
+        
+        // Calcular dias decorridos desde o último pagamento
+        const diffTime = hoje.getTime() - dataBase.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Verificar se está atrasado (mais de 33 dias)
+        const novoStatus = diffDays > 33 ? "atrasado" : "em_dia";
+        
+        // Verificar se é momento de renovar créditos (a cada 30 dias)
+        let renovado = false;
+        if (diffDays >= 30 && diffDays < 33 && user.payment_status === "em_dia") {
+          // Obter informações do plano
+          const tier = await storage.getTierById(user.tier_id);
+          
+          if (tier) {
+            // Renovar créditos conforme o plano
+            await storage.updateUser(user.id, {
+              responses_available: tier.responses_limit
+            });
+            renovado = true;
+          }
+        }
+        
+        // Atualizar status de pagamento se necessário
+        if (novoStatus !== user.payment_status) {
+          await storage.updateUser(user.id, { payment_status: novoStatus });
+        }
+        
+        return { ...user, payment_status: novoStatus, renovado };
+      }));
+      
+      res.json({ 
+        message: "Status de pagamento verificado com sucesso", 
+        updatedUsers: updatedUsers.length
+      });
+    } catch (error) {
+      console.error("Erro ao verificar status de pagamento:", error);
+      res.status(500).json({ message: "Erro ao verificar status de pagamento" });
+    }
+  });
+  
+  // Atualiza data do último pagamento (usado por sistema externo)
+  app.post("/api/update-payment", async (req, res) => {
+    try {
+      const { user_id, credits } = req.body;
+      
+      if (!user_id || !credits) {
+        return res.status(400).json({ message: "ID de usuário e créditos são obrigatórios" });
+      }
+      
+      // Atualizar data de pagamento e status
+      const hoje = new Date();
+      const user = await storage.updateUser(user_id, {
+        last_payment_date: hoje,
+        payment_status: "em_dia",
+        responses_available: credits
+      });
+      
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      
+      res.json({ 
+        message: "Pagamento atualizado com sucesso", 
+        user 
+      });
+    } catch (error) {
+      console.error("Erro ao atualizar pagamento:", error);
+      res.status(500).json({ message: "Erro ao atualizar pagamento" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

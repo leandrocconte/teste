@@ -274,10 +274,25 @@ export default function ChatPage() {
       
       {/* Chat Messages Area - Área de scroll */}
       <div 
-        className="flex-1 overflow-y-auto p-4" 
+        className="flex-1 overflow-y-auto p-4 relative" 
         ref={chatContainerRef}
         style={{ height: "calc(100vh - 132px)" }}
       >
+        {/* Overlay de pagamento atrasado */}
+        {user?.payment_status === "atrasado" && (
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+            <div className="bg-card p-6 rounded-lg border border-red-500 shadow-lg max-w-md text-center">
+              <h3 className="text-xl font-semibold text-red-500 mb-4">Assinatura Atrasada</h3>
+              <p className="mb-4">Sua assinatura está atrasada. Para continuar usando o chat, atualize seu pagamento.</p>
+              <Button 
+                onClick={() => navigate("/subscription")}
+                className="mr-2"
+              >
+                Ajustar Pagamento
+              </Button>
+            </div>
+          </div>
+        )}
         <div className="max-w-3xl mx-auto space-y-4">
           {/* Welcome Message */}
           {messages?.length === 0 && !messagesLoading && (

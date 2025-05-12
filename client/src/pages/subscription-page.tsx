@@ -42,9 +42,13 @@ export default function SubscriptionPage() {
     if (!user) return 0;
     
     const hoje = new Date();
+    // Trate os campos como strings para evitar erros de tipagem
+    const createdAt = user.created_at ? new Date(String(user.created_at)) : hoje;
+    const lastPaymentDate = user.last_payment_date ? new Date(String(user.last_payment_date)) : hoje;
+    
     const dataBase = user.tier_id === 4 // 4 = plano free
-      ? new Date(user.created_at) // plano free: baseado na data de cadastro
-      : new Date(user.last_payment_date); // outros planos: baseado na data do último pagamento
+      ? createdAt // plano free: baseado na data de cadastro
+      : lastPaymentDate; // outros planos: baseado na data do último pagamento
       
     // Adiciona 30 dias à data base
     const dataRenovacao = new Date(dataBase);
