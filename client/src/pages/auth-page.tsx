@@ -13,6 +13,7 @@ import { useLocation } from "wouter";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
+import { Logo } from "@/components/ui/logo";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
