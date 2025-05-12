@@ -138,6 +138,24 @@ export default function PartnersPage() {
     window.open(url, '_blank');
   };
   
+  // Format date to DD/MM/YYYY
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "Permanente";
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString; // Return as-is if invalid
+      
+      return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch (error) {
+      return dateString; // Fall back to the original string
+    }
+  };
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header com hamburger menu */}
@@ -221,7 +239,7 @@ export default function PartnersPage() {
                         <p className="text-muted-foreground text-sm mb-4">{partner.description}</p>
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground text-sm">
-                            <span className="font-medium text-xs">Válido até:</span> {partner.valid_until}
+                            <span className="font-medium text-xs">Válido até:</span> {formatDate(partner.valid_until)}
                           </span>
                           <Button size="sm">
                             Ver oferta

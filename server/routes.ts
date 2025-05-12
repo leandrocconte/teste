@@ -8,9 +8,54 @@ import { insertMessageSchema, messages, User } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
+// Função para verificar o status de pagamento dos usuários
+async function checkPaymentStatus() {
+  try {
+    // Buscar todos os usuários
+    const users = await storage.getAllUsers();
+    
+    // Verificar status de pagamento para cada usuário
+    const updatedUsers = await Promise.all(users.map(async (user: User) => {
+      const now = new Date();
+      const lastPaymentDate = user.last_payment_date ? new Date(user.last_payment_date) : new Date(user.created_at);
+      
+      // Calcular dias desde o último pagamento ou cadastro
+      const daysSinceLastPayment = Math.floor((now.getTime() - lastPaymentDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Se o usuário for plano free (tier_id = 1), a data de referência é a de criação da conta
+      // Para outros planos, a data de referência é a do último pagamento
+      let paymentStatus = 'em_dia';
+      
+      // Se passou de 33 dias, o pagamento está atrasado (conforme regra de negócio)
+      if (daysSinceLastPayment > 33) {
+        paymentStatus = 'atrasado';
+      }
+      
+      // Se o status mudou, atualizar no banco
+      if (user.payment_status !== paymentStatus) {
+        return await storage.updateUser(user.id, { payment_status: paymentStatus });
+      }
+      
+      return user;
+    }));
+    
+    console.log(`[Payment Check] ${new Date().toISOString()} - Verificação de pagamentos concluída para ${users.length} usuários.`);
+    return updatedUsers;
+  } catch (error) {
+    console.error('Erro ao verificar status de pagamento:', error);
+    return [];
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication routes
   setupAuth(app);
+  
+  // Verificar status de pagamento ao iniciar servidor
+  checkPaymentStatus();
+  
+  // Agendar verificação diária
+  setInterval(checkPaymentStatus, 24 * 60 * 60 * 1000);
 
   // Get lists/categories of IAs
   app.get("/api/lists", async (req, res) => {
