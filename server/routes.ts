@@ -17,7 +17,10 @@ async function checkPaymentStatus() {
     // Verificar status de pagamento para cada usuário
     const updatedUsers = await Promise.all(users.map(async (user: User) => {
       const now = new Date();
-      const lastPaymentDate = user.last_payment_date ? new Date(user.last_payment_date) : new Date(user.created_at);
+      // Tratamento seguro para datas nulas - usar created_at como fallback
+      const lastPaymentDate = user.last_payment_date 
+        ? new Date(user.last_payment_date) 
+        : (user.created_at ? new Date(user.created_at) : now);
       
       // Calcular dias desde o último pagamento ou cadastro
       const daysSinceLastPayment = Math.floor((now.getTime() - lastPaymentDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -108,8 +111,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const messageSchema = insertMessageSchema.parse(req.body);
       const { content, lista_id } = messageSchema;
 
-      // Send to external API
-      const response = await axios.post('https://fl.libx.com.br/webhook-test/8391ddd1-64c2-4347-b8f6-6784a31242353', {
+      // Send to external API (using environment variable for security)
+      const AI_API_URL = process.env.AI_API_URL || 'https://fl.libx.com.br/webhook-test/8391ddd1-64c2-4347-b8f6-6784a31242353';
+      const response = await axios.post(AI_API_URL, {
         message: content,
         user_id: user.id,
         lista_id
