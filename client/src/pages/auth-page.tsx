@@ -103,8 +103,8 @@ export default function AuthPage() {
         <Card className="border-border bg-card shadow-xl">
           <CardContent className="pt-6">
             <div className="text-center mb-8">
-              <div className="w-12 h-12 bg-primary rounded-lg mx-auto flex items-center justify-center mb-4">
-                <Bot className="h-6 w-6 text-white" />
+              <div className="mx-auto mb-4 flex justify-center">
+                <Logo size="md" />
               </div>
               <h2 className="text-2xl font-bold">
                 {isLogin ? "Bem-vindo ao IA Chat" : "Criar sua conta"}
