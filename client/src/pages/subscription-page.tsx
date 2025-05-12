@@ -37,9 +37,9 @@ export default function SubscriptionPage() {
     ? (user.responses_available / userTier.responses_limit) * 100
     : 0;
     
-  // Calcula dias para renovação de créditos
-  const calculaDiasParaRenovacao = () => {
-    if (!user) return 0;
+  // Função para obter a data de renovação de créditos
+  const obterDataRenovacao = () => {
+    if (!user) return new Date();
     
     const hoje = new Date();
     // Trate os campos como strings para evitar erros de tipagem
@@ -54,6 +54,16 @@ export default function SubscriptionPage() {
     const dataRenovacao = new Date(dataBase);
     dataRenovacao.setDate(dataRenovacao.getDate() + 30);
     
+    return dataRenovacao;
+  };
+  
+  // Calcula dias para renovação de créditos
+  const calculaDiasParaRenovacao = () => {
+    if (!user) return 0;
+    
+    const hoje = new Date();
+    const dataRenovacao = obterDataRenovacao();
+    
     // Calcula a diferença em dias
     const diffTime = dataRenovacao.getTime() - hoje.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -61,11 +71,19 @@ export default function SubscriptionPage() {
     return diffDays > 0 ? diffDays : 0;
   };
   
+  // Formata a data no formato brasileiro
+  const formatarData = (data: Date) => {
+    return data.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+  
   const navigationItems = [
     { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
     { id: "subscription", title: "Gerenciar Assinatura", icon: <CrownIcon size={20} />, path: "/subscription" },
     { id: "partners", title: "Descontos com Parceiros", icon: <TicketIcon size={20} />, path: "/partners" },
-    { id: "faq", title: "Perguntas Frequentes", icon: <HelpCircle size={20} />, path: "/faq" },
   ];
 
   // Handle sidebar location
@@ -281,7 +299,7 @@ export default function SubscriptionPage() {
                             <span className="text-red-500">Pagamento atrasado! Atualize seu plano</span>
                           ) : (
                             <>
-                              Próxima recarga em {calculaDiasParaRenovacao()} dias
+                              Seus créditos renovam no dia {formatarData(obterDataRenovacao())}
                               {user?.payment_status === "atrasado" && (
                                 <div className="mt-2">
                                   <Button
@@ -381,32 +399,7 @@ export default function SubscriptionPage() {
                     ))}
                   </div>
                   
-                  {/* FAQ Section */}
-                  <div className="bg-card border border-border rounded-xl p-5 mb-8">
-                    <h3 className="text-lg font-semibold mb-4">Perguntas frequentes</h3>
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1">
-                        <AccordionTrigger>Como é feita a cobrança?</AccordionTrigger>
-                        <AccordionContent>
-                          A cobrança é feita mensalmente através do cartão de crédito cadastrado. Você pode cancelar a qualquer momento.
-                        </AccordionContent>
-                      </AccordionItem>
-                      
-                      <AccordionItem value="item-2">
-                        <AccordionTrigger>O que acontece se eu usar todas as mensagens?</AccordionTrigger>
-                        <AccordionContent>
-                          Quando todas as mensagens são utilizadas, você precisará esperar o próximo ciclo de faturamento ou fazer um upgrade para um plano com mais mensagens.
-                        </AccordionContent>
-                      </AccordionItem>
-                      
-                      <AccordionItem value="item-3">
-                        <AccordionTrigger>Posso mudar de plano a qualquer momento?</AccordionTrigger>
-                        <AccordionContent>
-                          Sim, você pode fazer upgrade ou downgrade do seu plano a qualquer momento. As alterações entrarão em vigor no próximo ciclo de faturamento.
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </div>
+
                 </>
               )}
             </div>
