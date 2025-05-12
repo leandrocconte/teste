@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { setupAuth, hashPassword } from "./auth";
 import axios from "axios";
 import { z } from "zod";
-import { insertMessageSchema, messages } from "@shared/schema";
+import { insertMessageSchema, messages, User } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -150,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const users = await storage.getAllUsers();
       
       // Para cada usuário, verificar o status de pagamento
-      const updatedUsers = await Promise.all(users.map(async (user) => {
+      const updatedUsers = await Promise.all(users.map(async (user: User) => {
         const hoje = new Date();
         
         // Data de referência para renovação

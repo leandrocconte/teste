@@ -34,7 +34,7 @@ export default function ChatPage() {
   const selectedList = lists?.find(list => list.id === Number(listId));
   
   // Get messages
-  const { data: messages, isLoading: messagesLoading } = useQuery<Message[]>({
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: [`/api/messages/${listId}`],
     enabled: !!listId,
     onSuccess: () => {
@@ -295,7 +295,7 @@ export default function ChatPage() {
         )}
         <div className="max-w-3xl mx-auto space-y-4">
           {/* Welcome Message */}
-          {messages?.length === 0 && !messagesLoading && (
+          {messages.length === 0 && !messagesLoading && (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-primary bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
                 <AIAvatar />
@@ -340,7 +340,7 @@ export default function ChatPage() {
           )}
           
           {/* Message Thread */}
-          {messages?.map((message) => (
+          {messages.map((message) => (
             <div key={message.id}>
               {/* User Message */}
               <ChatMessage

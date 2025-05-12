@@ -220,7 +220,25 @@ export default function SubscriptionPage() {
           <div className="flex-1 overflow-auto p-4 md:p-6">
             <div className="max-w-screen-xl mx-auto">
               <div className="mb-8">
-                <h1 className="text-2xl font-bold">Gerenciar Assinatura</h1>
+                <div className="flex items-center justify-between mb-4">
+                  <h1 className="text-2xl font-bold">Gerenciar Assinatura</h1>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open("https://api.whatsapp.com?phone=5517992695422&text=Preciso de suporte com minha assinatura", "_blank")}
+                    className="flex items-center"
+                  >
+                    <svg 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor" 
+                      className="w-4 h-4 mr-2 text-green-500"
+                    >
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.917 1.04 5.591 2.769 7.671L.524 23.986c-.125.283-.046.615.167.817.212.204.548.248.829.114l4.815-2.308A11.9 11.9 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.6c-2.786 0-5.405-.996-7.452-2.766a.515.515 0 00-.52-.071l-3.113 1.494 1.491-3.373a.52.52 0 00-.062-.561A9.598 9.598 0 012.4 12C2.4 6.708 6.708 2.4 12 2.4S21.6 6.708 21.6 12 17.292 21.6 12 21.6z"/>
+                    </svg>
+                    Falar com Suporte
+                  </Button>
+                </div>
                 <p className="text-muted-foreground mt-1">
                   Escolha o plano ideal para suas necessidades
                 </p>
