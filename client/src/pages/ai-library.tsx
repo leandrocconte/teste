@@ -7,6 +7,7 @@ import { List, Tier } from "@shared/schema";
 import { useRef, useState, useEffect } from "react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { Logo } from "@/components/ui/logo";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function AILibraryPage() {
