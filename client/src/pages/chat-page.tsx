@@ -37,15 +37,18 @@ export default function ChatPage() {
   const { data: messages = [], isLoading: messagesLoading } = useQuery<Message[]>({
     queryKey: [`/api/messages/${listId}`],
     enabled: !!listId,
-    onSuccess: () => {
-      // Scroll to bottom when messages are loaded
+  });
+  
+  // Scroll to bottom when messages are loaded
+  useEffect(() => {
+    if (messages && !messagesLoading) {
       setTimeout(() => {
         if (chatContainerRef.current) {
           chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
       }, 100);
     }
-  });
+  }, [messages, messagesLoading]);
   
   // Send message mutation
   const sendMessageMutation = useMutation({
@@ -296,7 +299,7 @@ export default function ChatPage() {
         )}
         <div className="max-w-3xl mx-auto space-y-4">
           {/* Welcome Message */}
-          {messages.length === 0 && !messagesLoading && (
+          {messages && messages.length === 0 && !messagesLoading && (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-primary bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
                 <AIAvatar />
@@ -341,7 +344,7 @@ export default function ChatPage() {
           )}
           
           {/* Message Thread */}
-          {messages.map((message) => (
+          {Array.isArray(messages) && messages.map((message: Message) => (
             <div key={message.id}>
               {/* User Message */}
               <ChatMessage
