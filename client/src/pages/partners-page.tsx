@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Loader2, Menu, X, Bot, CrownIcon, TicketIcon, LogOut } from "lucide-react";
+import { Loader2, Menu, X, Bot, CrownIcon, TicketIcon, LogOut, HelpCircle } from "lucide-react";
 import { Parceiro, Tier } from "@shared/schema";
 import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
@@ -31,6 +31,7 @@ export default function PartnersPage() {
     { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
     { id: "subscription", title: "Gerenciar Assinatura", icon: <CrownIcon size={20} />, path: "/subscription" },
     { id: "partners", title: "Descontos com Parceiros", icon: <TicketIcon size={20} />, path: "/partners" },
+    { id: "faq", title: "Perguntas Frequentes", icon: <HelpCircle size={20} />, path: "/faq" },
   ];
 
   // Handle sidebar location
