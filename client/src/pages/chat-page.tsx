@@ -8,6 +8,7 @@ import { useRef, useState, useEffect } from "react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { ChatMessage } from "@/components/chat-message";
 import { Message, List, Tier } from "@shared/schema";
+import { Logo } from "@/components/ui/logo";
 import { AIAvatar } from "@/components/ui/ai-avatar";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -161,11 +162,8 @@ export default function ChatPage() {
     <>
       {/* Logo */}
       <div className="p-4 border-b border-border flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-white">
-            <Bot size={18} />
-          </div>
-          <span className="font-semibold text-lg">IA Chat</span>
+        <div className="flex items-center justify-center">
+          <Logo size="md" />
         </div>
         <button 
           onClick={() => setIsSidebarOpen(false)} 
