@@ -7,17 +7,18 @@ interface LogoProps {
 }
 
 export function Logo({ size = "md", className = "", style }: LogoProps) {
+  // Definimos apenas a largura (width) e a altura será automática para manter a proporção
   const sizeClass = {
-    sm: "w-8 h-8",
-    md: "w-12 h-12",
-    lg: "w-16 h-16"
+    sm: "w-24",
+    md: "w-32",
+    lg: "w-40"
   }[size];
 
   return (
     <img 
-      src="/src/assets/logo.png" 
+      src="/assets/logoptanova.png" 
       alt="Logo" 
-      className={`${sizeClass} ${className}`} 
+      className={`${sizeClass} ${className} object-contain`} 
       style={style}
     />
   );

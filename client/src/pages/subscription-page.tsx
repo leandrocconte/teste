@@ -85,6 +85,7 @@ export default function SubscriptionPage() {
     { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
     { id: "subscription", title: "Gerenciar Assinatura", icon: <CrownIcon size={20} />, path: "/subscription" },
     { id: "partners", title: "Descontos com Parceiros", icon: <TicketIcon size={20} />, path: "/partners" },
+    { id: "faq", title: "Perguntas Frequentes", icon: <HelpCircle size={20} />, path: "/faq" },
   ];
 
   // Handle sidebar location
