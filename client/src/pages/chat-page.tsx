@@ -247,10 +247,8 @@ export default function ChatPage() {
           </button>
         </div>
         
-        <div className="text-lg font-medium">
-          <h2 className="flex items-center">
-            {selectedList?.title || "Chat com IA"}
-          </h2>
+        <div className="flex justify-center items-center">
+          <Logo size="md" />
         </div>
         
         <div className="w-8"></div>

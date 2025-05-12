@@ -5,6 +5,7 @@ import { Loader2, Menu, X, Bot, CrownIcon, TicketIcon, LogOut, HelpCircle } from
 import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { Logo } from "@/components/ui/logo";
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Accordion,
@@ -51,11 +52,8 @@ export default function FAQPage() {
     <>
       {/* Logo */}
       <div className="p-4 border-b border-border flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center text-white">
-            <Bot size={18} />
-          </div>
-          <span className="font-semibold text-lg">IA Chat</span>
+        <div className="flex items-center justify-center">
+          <Logo size="md" />
         </div>
         <button 
           onClick={() => setIsSidebarOpen(false)} 
@@ -172,7 +170,9 @@ export default function FAQPage() {
         >
           <Menu size={20} />
         </button>
-        <div className="text-lg font-medium">Perguntas Frequentes</div>
+        <div className="flex justify-center items-center">
+          <Logo size="md" />
+        </div>
         <div className="w-8"></div>
       </header>
       
