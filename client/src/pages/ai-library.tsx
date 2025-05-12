@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
-import { Loader2, Menu, X, LogOut, Bot, CrownIcon, TicketIcon } from "lucide-react";
+import { Loader2, Menu, X, LogOut, Bot, CrownIcon, TicketIcon, HelpCircle } from "lucide-react";
 import { List, Tier } from "@shared/schema";
 import { useRef, useState, useEffect } from "react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -31,6 +31,7 @@ export default function AILibraryPage() {
     { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
     { id: "subscription", title: "Gerenciar Assinatura", icon: <CrownIcon size={20} />, path: "/subscription" },
     { id: "partners", title: "Descontos com Parceiros", icon: <TicketIcon size={20} />, path: "/partners" },
+    { id: "faq", title: "Perguntas Frequentes", icon: <HelpCircle size={20} />, path: "/faq" },
   ];
 
   // Handle sidebar location

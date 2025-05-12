@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Loader2, Menu, X, LogOut, Bot, CrownIcon, TicketIcon } from "lucide-react";
+import { Send, Loader2, Menu, X, LogOut, Bot, CrownIcon, TicketIcon, HelpCircle } from "lucide-react";
 import { useParams, useLocation } from "wouter";
 import { useRef, useState, useEffect } from "react";
 import { queryClient, apiRequest } from "@/lib/queryClient";

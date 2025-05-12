@@ -14,6 +14,7 @@ import AILibraryPage from "@/pages/ai-library";
 import ChatPage from "@/pages/chat-page";
 import SubscriptionPage from "@/pages/subscription-page";
 import PartnersPage from "@/pages/partners-page";
+import FAQPage from "@/pages/faq-page";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <ProtectedRoute path="/chat/:listId" component={ChatPage} />
       <ProtectedRoute path="/subscription" component={SubscriptionPage} />
       <ProtectedRoute path="/partners" component={PartnersPage} />
+      <ProtectedRoute path="/faq" component={FAQPage} />
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />
