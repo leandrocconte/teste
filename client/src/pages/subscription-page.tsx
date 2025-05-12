@@ -269,14 +269,10 @@ export default function SubscriptionPage() {
                         {/* Plan features */}
                         <div className="p-5 flex-1">
                           <ul className="space-y-3 mb-6">
-                            {[
-                              { id: 1, desc: "Acesso a todos os assistentes", value: tier.check1 },
-                              { id: 2, desc: "Histórico de conversas", value: tier.check2 },
-                              { id: 3, desc: "Suporte prioritário", value: tier.check3 }
-                            ].map((item) => (
+                            {checklistItems?.map((item) => (
                               <li key={item.id} className="flex items-start">
                                 <div className="mr-2 mt-0.5">
-                                  {item.value === "sim" ? (
+                                  {tier.tier_id <= item.id ? (
                                     <Check className="h-4 w-4 text-green-500" />
                                   ) : (
                                     <X className="h-4 w-4 text-muted-foreground" />
@@ -284,12 +280,12 @@ export default function SubscriptionPage() {
                                 </div>
                                 <span
                                   className={`text-sm ${
-                                    item.value === "sim"
+                                    tier.tier_id <= item.id
                                       ? "text-foreground"
                                       : "text-muted-foreground"
                                   }`}
                                 >
-                                  {item.desc}
+                                  {item.descricao}
                                 </span>
                               </li>
                             ))}

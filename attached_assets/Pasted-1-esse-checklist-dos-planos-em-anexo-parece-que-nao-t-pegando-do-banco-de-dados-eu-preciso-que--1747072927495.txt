@@ -1,0 +1,16 @@
+1- esse checklist dos planos (em anexo) parece que nao tá pegando do banco de dados, eu preciso que pegue do banco de dados da tabela checklist planos os itens do checklist para atualizar como variável na pagina de assinatura
+2- Os créditos do plano free renovam a cada 30 dias, sempre se baseando em cima da data de cadastro do usuário. (verifique como deixar ajustado no banco de dados)
+3- os créditos dos demais planos que não são free renovam a cada 30 dias após a data de pagamento confirmado do último mês (verifique como deixar ajustado no banco de dados, crie uma tabela que salve a data do ultimo pagamento e crie uma coluna para falar se está atrasado ou nao)
+4- Se passar 33 dias após a data do último pagamento quer dizer que o usuário está atrasado
+5- Caso o usuário estiver atrasado na assinatura, coloque na tela de qualquer chat aberto um filtro por cima das mensagens mais escuro e coloque uma mensagem falando que a assinatura está atrasada e coloque o botão para ir para a pagina gerenciar assinatura, este botão terá o titulo "ajustar pagamento"
+6- na página gerenciar assinatura, adicione um botão para falar com o suporte e neste botão coloque o link https://api.whatsapp.com?phone=5517992695422?text=Minha assinatura está atrasada, gostaria de ajustar minha assinatura
+7- os ids dos usuários precisam ter 25 caracteres
+8- eu quero ter uma tabela somente para perguntas frequentes com suas respectivas respostas, que será disponibilizado em uma outra pagina que será acessada através de um novo botão no menu como "dúvidas frequentes" (tire essa parte da pagina de assinaturas
+10- na pagina de gerenciar assinaturas onde mostra "seu plano atual" eu quero que você use como variável o valor de dias para renovar os créditos de acordo com a logica descrita acima para plano free e para os demais planos
+11- preciso que você faça uma auditoria de segurança e garanta que o app esteja seguro contra hacker querer acessar o baco de dados, ou acessar conta de usuários. também não posso deiar que o link de endpoint que é enviado para a ia gerar a resposta para o usuário apareca publicamente
+12- Se o usuário enviar uma mensagem e a api responder um valor de "subtrair" que é maior do que o limite que ele tem de credito, considere a resposta da ia, porém, logo depois mostre na parte que mostra quantos créditos ele tem que ele não tem mais créditos e um botão ao lado para ele fazer upgrade de plano
+13- Se o usuário enviar uma mensagem e os créditos for = 0 , faça a mesma coisa do item 12.
+14- Para todos os chats, quando o usuário abrir, a tela precisa ser escrolada para a ultima mensagem do chat, lá embaixo.
+15- no lugar do titulo da pagina ao lado do menu sanduiche a parte superior, substitua apenas pelo logo (limitar em uma proporção e dimensão que se encaixe naquele espaço e que fique responsivo em qualquer formato de tela)
+16- no menu sanduiche adicionar apenas o logo na parte superior, tirando o texto atual e o ícone presente
+17- eu irei atualizar a data de pagamento do cliente através de uma requisição de api que irá atualizar o banco de dados, informando a ultima data de pagamento e caso seja < que 30 dias o status será em dia, e tbm nessa requisição de api eu vou receber quantos créditos será atualizado para aquele usuário.
