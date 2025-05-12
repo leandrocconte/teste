@@ -36,6 +36,26 @@ export default function SubscriptionPage() {
   const responsesPercentage = userTier && user 
     ? (user.responses_available / userTier.responses_limit) * 100
     : 0;
+    
+  // Calcula dias para renovação de créditos
+  const calculaDiasParaRenovacao = () => {
+    if (!user) return 0;
+    
+    const hoje = new Date();
+    const dataBase = user.tier_id === 4 // 4 = plano free
+      ? new Date(user.created_at) // plano free: baseado na data de cadastro
+      : new Date(user.last_payment_date); // outros planos: baseado na data do último pagamento
+      
+    // Adiciona 30 dias à data base
+    const dataRenovacao = new Date(dataBase);
+    dataRenovacao.setDate(dataRenovacao.getDate() + 30);
+    
+    // Calcula a diferença em dias
+    const diffTime = dataRenovacao.getTime() - hoje.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays > 0 ? diffDays : 0;
+  };
   
   const navigationItems = [
     { id: "library", title: "Biblioteca de IAs", icon: <Bot size={20} />, path: "/" },
@@ -234,7 +254,25 @@ export default function SubscriptionPage() {
                       <div className="mt-6 pt-6 border-t border-border">
                         <Progress value={responsesPercentage} className="h-3" />
                         <div className="mt-2 text-xs text-muted-foreground">
-                          Próxima recarga em 15 dias
+                          {user?.payment_status === "atrasado" ? (
+                            <span className="text-red-500">Pagamento atrasado! Atualize seu plano</span>
+                          ) : (
+                            <>
+                              Próxima recarga em {calculaDiasParaRenovacao()} dias
+                              {user?.payment_status === "atrasado" && (
+                                <div className="mt-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-red-500 border-red-500 hover:bg-red-500/10"
+                                    onClick={() => window.open("https://api.whatsapp.com?phone=5517992695422?text=Minha assinatura está atrasada, gostaria de ajustar minha assinatura", "_blank")}
+                                  >
+                                    Ajustar pagamento
+                                  </Button>
+                                </div>
+                              )}
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -269,26 +307,39 @@ export default function SubscriptionPage() {
                         {/* Plan features */}
                         <div className="p-5 flex-1">
                           <ul className="space-y-3 mb-6">
-                            {checklistItems?.map((item) => (
-                              <li key={item.id} className="flex items-start">
-                                <div className="mr-2 mt-0.5">
-                                  {tier.tier_id <= item.id ? (
-                                    <Check className="h-4 w-4 text-green-500" />
-                                  ) : (
-                                    <X className="h-4 w-4 text-muted-foreground" />
-                                  )}
-                                </div>
-                                <span
-                                  className={`text-sm ${
-                                    tier.tier_id <= item.id
-                                      ? "text-foreground"
-                                      : "text-muted-foreground"
-                                  }`}
-                                >
-                                  {item.descricao}
-                                </span>
-                              </li>
-                            ))}
+                            {checklistItems?.map((item, index) => {
+                              // Relacionar checklist com os campos check1, check2, check3 do tier
+                              let isChecked = false;
+                              
+                              if (index === 0 && tier.check1 === "sim") {
+                                isChecked = true;
+                              } else if (index === 1 && tier.check2 === "sim") {
+                                isChecked = true;
+                              } else if (index === 2 && tier.check3 === "sim") {
+                                isChecked = true;
+                              }
+                              
+                              return (
+                                <li key={item.id} className="flex items-start">
+                                  <div className="mr-2 mt-0.5">
+                                    {isChecked ? (
+                                      <Check className="h-4 w-4 text-green-500" />
+                                    ) : (
+                                      <X className="h-4 w-4 text-muted-foreground" />
+                                    )}
+                                  </div>
+                                  <span
+                                    className={`text-sm ${
+                                      isChecked
+                                        ? "text-foreground"
+                                        : "text-muted-foreground"
+                                    }`}
+                                  >
+                                    {item.descricao}
+                                  </span>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                         

@@ -14,6 +14,9 @@ export const users = pgTable("users", {
   reset_token_expires: timestamp("reset_token_expires"),
   responses_available: integer("responses_available").default(20).notNull(),
   tier_id: integer("tier_id").default(4).notNull(),
+  created_at: timestamp("created_at").defaultNow(), // Data de cadastro do usuário
+  last_payment_date: timestamp("last_payment_date").defaultNow(), // Data do último pagamento
+  payment_status: text("payment_status").default("em_dia").notNull(), // em_dia, atrasado
 }, (table) => {
   return {
     emailIdx: uniqueIndex("email_idx").on(table.email),
@@ -24,7 +27,10 @@ export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   reset_token: true,
   reset_token_expires: true,
-  tier_id: true
+  tier_id: true,
+  created_at: true,
+  last_payment_date: true,
+  payment_status: true
 });
 
 // Lists of AI categories
